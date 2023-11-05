@@ -6,4 +6,4 @@ app = Flask(__name__)
 def home():
     "Hello AWS CI/CD application"
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0',port=8080)

@@ -1,10 +1,1 @@
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "h deploy okay"
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+import logging\nfrom flask import Flask, request\nfrom werkzeug.exceptions import HTTPException\n\napp = Flask(__name__)\n\n# Configure logging\nlogging.basicConfig(level=logging.INFO, filename='app.log',\n                    format='%(asctime)s - %(levelname)s - %(message)s')\n\n# Basic input sanitization (expand for more robust validation as needed)\ndef sanitize_input(input_str):\n  return input_str.strip()\n\n\n#Example of a simple route with input validation and error handling\n@app.route('/', methods=['GET', 'POST'])\ndef home():\n    try:\n        if request.method == 'POST':\n            name = sanitize_input(request.form.get('name', ''))\n            if not name:\n                return "Please provide a name"\n            return f"Hello, {name}!"\n        else:\n            return "Hello, World!"\n\n    except HTTPException as e:\n        logging.exception("HTTP Exception: %s", e)\n        return f"An error occurred: {e}", 500\n    except Exception as e:\n        logging.exception("Unexpected Error: %s", e)\n        return "An unexpected error occurred.", 500\n\nif __name__ == '__main__':\n    app.run(host='127.0.0.1', port=5000, debug=False)
